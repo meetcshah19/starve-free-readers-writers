@@ -7,6 +7,9 @@ The solution is to place each process trying to access the resource in a first i
 - a writer is waiting
 - if it was the last reading process
 
+The psuedocode is contained in :
+- Semaphore.txt
+- Processes.txt
 ### References
 
 - Operating Systems Concepts (9th Edition), Abraham Silberchatz, Peter B Galvin and Greg Gagne
