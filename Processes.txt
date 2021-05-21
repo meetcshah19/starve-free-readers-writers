@@ -1,0 +1,53 @@
+// Global variables
+Semaphore* semaphore_in, semaphore_out, semaphore_write; 
+semaphore_out->value = 1; 
+semaphore_write->value = 0; 
+semaphore_in->value = 1; 
+
+int count_in = 0; 
+// Number of readers started reading
+int count_out = 0; 
+// Number of readers completed reading
+bool is_writer_waiting = false; 
+// Stores whether a writer is waiting
+
+// Reader Process Psuedocode
+
+// Assume the process_id is the process id
+semaphore_in->wait(process_id); 
+// Call wait 
+count_in++;             
+// count no of process started reading
+semaphore_in->signal();         
+
+//Critical section to read the data
+
+semaphore_out->wait(process_id); 
+// wait on the out semaphore 
+count_out++; 
+// increment count_out after reading complete
+if(count_in == count_out && is_writer_waiting) { 
+    semaphore_write->signal();                     
+}                                       
+// signal write semaphore if this is last reader waiting
+semaphore_out->signal(); 
+
+//Writer Process psuedocode
+
+//Assume process_id is the process id
+semaphore_out->wait(process_id); 
+semaphore_in->wait(process_id); 
+if(count_in == count_out) {   
+    // if all current processes have finished reading
+    semaphore_out->signal(); 
+} else {                  
+    // keep waiting for readers to finish
+    is_writer_waiting = true; 
+    semaphore_out->signal(); 
+    writer->wait(); 
+    is_writer_waiting = false; 
+}
+
+//Critical section to write the data
+
+semaphore_in->signal();

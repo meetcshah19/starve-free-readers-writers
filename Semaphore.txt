@@ -1,0 +1,57 @@
+//This represents a struct for Process.
+Struct Process {
+    Process* next;
+    int Process_id;
+}
+
+//a First In First Oout queue of Processes.
+struct Queue {
+    Process* head, last;
+
+   	void push(int proc_id) {
+        Process* Process = new Process();
+        Process->Process_id = proc_id;
+        if(last == NULL) {
+            head = Process;
+            last = Process;
+        } else {
+            last->next = Process;
+            last = Process;
+        }
+    }
+
+    int pop() {
+        if(head == NULL) {
+            return -1; 
+        } else {
+            int proc_id = head->Process_id;
+            head = head->next;
+            if(head == NULL) {
+                last = NULL;
+            }
+
+            return proc_id;
+        }
+    }
+}
+
+struct Semaphore {
+    int val;
+    Queue* queue = new Queue();
+
+    void signal() {
+        val++;
+        if(val <= 0) {
+            int proc_id = queue->pop();
+            wake(proc_id); 
+        }
+    }
+
+    void wait(int proc_id) {
+        val--;
+        if(val < 0) {
+            queue->push(proc_id);
+            block(proc_id); 
+        }
+    }
+}
